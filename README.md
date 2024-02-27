@@ -1,12 +1,10 @@
 # pipe
----
 Generic pipe "operator" for Go with fine-grained control.
 
 # What does this do?    
 Effectively the same functional composition the `|>` operator in Elixir allows for plus a little more. You can pipe any amount of outputs of one function as inputs to another (assuming the function expects that many inputs), automatic error handling, partial execution, examine the current state of the pipeline, and, execute further functions ontop of an existing pipeline, and deferred execution. Additionally, the result of the execution of a pipeline is unwrapped into a concrete type thanks to generics.
 
 # Install: 
----
 ```` 
 go get github.com/intangere/pipe 
 ````    
