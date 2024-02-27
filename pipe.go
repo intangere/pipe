@@ -13,6 +13,7 @@ var errType = reflect.TypeOf((*error)(nil)).Elem()
 
 type Pipe_[T any] struct {
 	args []any
+	extra_args [][]reflect.Value
 	fs []any
 	err error
 	inputs []reflect.Value
@@ -53,6 +54,12 @@ func (p *Pipe_[T]) DoN(calls_to_execute int) (p_ *Pipe_[T]) {
 
 	for fIndex, f := range p.fs[p.executionIndex:p.executionIndex+calls_to_execute] {
 
+		true_index := p.executionIndex
+
+		if len(p.extra_args[true_index]) > 0 {
+			p.inputs = append(p.inputs, p.extra_args[true_index]...)
+		}
+
 		p.executionIndex++
 
 		funcType := reflect.TypeOf(f)
@@ -79,13 +86,27 @@ func (p *Pipe_[T]) Do() (p_ *Pipe_[T]) {
 	return p.DoN(len(p.fs))
 }
 
-func (p *Pipe_[T]) Flow(f any) (p_ *Pipe_[T]) {
+func (p *Pipe_[T]) Flow(f any, args ...any) (p_ *Pipe_[T]) {
 	p.fs = append(p.fs, f)
+
+	extra_args := []reflect.Value{}
+	for _, arg := range args {
+		extra_args = append(extra_args, reflect.ValueOf(arg))
+	}
+
+	p.extra_args = append(p.extra_args, extra_args)
 	return p.DoN(1)
 }
 
-func (p *Pipe_[T]) Next(f any) *Pipe_[T] {
+func (p *Pipe_[T]) Next(f any, args ...any) *Pipe_[T] {
 	p.fs = append(p.fs, f)
+
+	extra_args := []reflect.Value{}
+	for _, arg := range args {
+		extra_args = append(extra_args, reflect.ValueOf(arg))
+	}
+
+	p.extra_args = append(p.extra_args, extra_args)
 	return p
 }
 

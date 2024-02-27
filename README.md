@@ -8,32 +8,31 @@ Effectively the same functional composition the `|>` operator in Elixir allows f
 ```` 
 go get github.com/intangere/pipe 
 ````    
+
 Usage (for more see *examples/example.go*): 
 ````go
-    // deferred execution
-    res, err = Pipe[string]("Hello").
-	Next(strings.ToLower).
-	Next(func (s string) string {
-		return s + " world!"
-	}).
-	Next(strings.Title).
-	Do().
-	Unwrap()
 
-    log.Println("Result:", res, "Error:", err)
-    // Output: Hello world!
+    // this is an awful example, but it demonstrates a few concepts
 
-    // execute as the pipe as it is built
-    res, err = Pipe[string]("Hello").
+    // Instead of doing this
+    example := "Hello World!"
+    example = strings.ToLower(example)
+    splits := strings.Split(example, " ")
+    new := "Bye " + splits[1]
+    log.Println("Result:", new)
+
+    // With pipe you can do
+    res, err := Pipe[string]("Hello World!").
         Flow(strings.ToLower).
-        Flow(func (s string) string {
-                return s + " world!"
+        Flow(strings.Split, " ").
+        Flow(func (parts []string) string {
+                return "Bye " + parts[1]
         }).
-        Flow(strings.Title).
         Unwrap()
 
     log.Println("Result:", res, "Error:", err)
-    // Output: Hello world!
+
+    // Output: Byte world!
 
 ````
 Credits:   

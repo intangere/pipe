@@ -10,11 +10,31 @@ import (
 
 func main() {
 
+    // instead of doing this
+    example := "Hello World!"
+    example = strings.ToLower(example)
+    splits := strings.Split(example, " ")
+    new := "Bye " + splits[1]
+    log.Println("Result:", new)
+
+    // with pipe you can do
+    res, err := Pipe[string]("Hello World!").
+	Flow(strings.ToLower).
+        Flow(strings.Split, " ").
+        Flow(func (parts []string) string {
+		return "Bye " + parts[1]
+	}).
+	Unwrap()
+
+    log.Println("Result:", res, "Error:", err)
+
+    log.Println("Yuur")
+
     // add function calls to the pipe with deferred execution ( `.Do()` )
-    res, err := Pipe[string]("Hello").
+    res, err = Pipe[string]("Hello").
 	Next(strings.ToLower).
 	Next(func (s string) string {
-		return s + " world!"
+		return s + " world1!"
 	}).
 	Next(strings.Title).
 	Do().
