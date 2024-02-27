@@ -28,6 +28,18 @@ func main() {
 
     log.Println("Result:", res, "Error:", err)
 
+    // or with deferred execution
+    res, err = Pipe[string]("Hello World!").
+	Next(strings.ToLower).
+        Next(strings.Split, " ").
+        Next(func (parts []string) string {
+		return "Bye " + parts[1]
+	}).
+	Do().
+	Unwrap()
+
+    log.Println("Result:", res, "Error:", err)
+
     // add function calls to the pipe with deferred execution ( `.Do()` )
     res, err = Pipe[string]("Hello").
 	Next(strings.ToLower).

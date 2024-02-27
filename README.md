@@ -34,6 +34,20 @@ Usage (for more see *examples/example.go*):
     log.Println("Result:", res, "Error:", err)
     // Output: Bye world!
 
+
+    // or with deferred execution
+    res, err = Pipe[string]("Hello World!").
+        Next(strings.ToLower).
+        Next(strings.Split, " ").
+        Next(func (parts []string) string {
+                return "Bye " + parts[1]
+        }).
+        Do().
+        Unwrap()
+
+    log.Println("Result:", res, "Error:", err)
+    // Output: Bye world!
+
 ````
 Credits:   
 https://github.com/aslrousta/pipe - reflect code copied nearly 1-1 from here
