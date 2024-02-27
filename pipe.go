@@ -17,6 +17,10 @@ type Pipe_[T any] struct {
 	inputs []reflect.Value
 	executionIndex int
 }
+func (p *Pipe_[T]) reset() {
+	p.executionIndex = 0
+	p.err = nil
+}
 
 func (p *Pipe_[T]) Errored() bool {
      return p.err != nil
@@ -80,11 +84,21 @@ func (p *Pipe_[T]) DoN(calls_to_execute int) (p_ *Pipe_[T]) {
 	return p
 }
 
-func (p *Pipe_[T]) Do() (p_ *Pipe_[T]) {
+func (p *Pipe_[T]) Do(args ...any) (p_ *Pipe_[T]) {
+	// reset the pipeline to take new arguments
+	if len(args) > 0 {
+		p.args = args
+		p.reset()
+	}
 	return p.DoN(len(p.fs))
 }
 
-func (p *Pipe_[T]) Result() (T, error) {
+func (p *Pipe_[T]) Result(args ...any) (T, error) {
+	// reset the pipeline to take new arguments
+	if len(args) > 0 {
+		p.args = args
+		p.reset()
+	}
 	return p.DoN(len(p.fs)).Unwrap()
 }
 

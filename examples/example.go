@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"fmt"
 	"strings"
 	"errors"
 
@@ -156,4 +157,32 @@ func main() {
 
     res, err = p.Unwrap()
     log.Println("New res:", res)
+
+
+    //reusable pipe
+    p = Pipe[string]().
+	Next(func (s string) string {
+           return "With argument: " + s
+        }).
+        Next(log.Println)
+
+    for i := 0; i < 3; i++ {
+        // no result
+        _, err = p.Result(fmt.Sprintf("%d", i))
+    }
+
+    // will print:
+    // With argument: 0
+    // With argument: 1
+    // With argument: 2
+
+
+    //reusable pipe cannot be used with Flow(). It will throw an input error
+    p = Pipe[string]().
+	Flow(func (s string) (string, error) {
+		return "testing", nil
+	})
+
+    _, err = p.Unwrap()
+    log.Print("Errored: ", p.Errored(), err)
 }

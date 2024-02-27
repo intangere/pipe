@@ -49,6 +49,23 @@ Usage (for more see *examples/example.go*):
     log.Println("Result:", res, "Error:", err)
     // Output: Bye world!
 
+    //reusable pipe
+    p = Pipe[string]().
+        Next(func (s string) string {
+           return "With argument: " + s
+        }).
+        Next(log.Println)
+
+    for i := 0; i < 3; i++ {
+        // no result
+        _, err = p.Result(fmt.Sprintf("%d", i))
+    }
+
+    // will print:
+    // With argument: 0
+    // With argument: 1
+    // With argument: 2
+
 ````
 Credits:   
 https://github.com/aslrousta/pipe - reflect code copied nearly 1-1 from here
