@@ -86,6 +86,10 @@ func (p *Pipe_[T]) Do() (p_ *Pipe_[T]) {
 	return p.DoN(len(p.fs))
 }
 
+func (p *Pipe_[T]) Result() (T, error) {
+	return p.DoN(len(p.fs)).Unwrap()
+}
+
 func (p *Pipe_[T]) Flow(f any, args ...any) (p_ *Pipe_[T]) {
 	p.fs = append(p.fs, f)
 
