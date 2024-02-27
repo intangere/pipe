@@ -20,6 +20,7 @@ Usage (for more see *examples/example.go*):
     splits := strings.Split(example, " ")
     new := "Bye " + splits[1]
     log.Println("Result:", new)
+    // Output: Bye world!
 
     // With pipe you can do
     res, err := Pipe[string]("Hello World!").
@@ -31,8 +32,7 @@ Usage (for more see *examples/example.go*):
         Unwrap()
 
     log.Println("Result:", res, "Error:", err)
-
-    // Output: Byte world!
+    // Output: Bye world!
 
 ````
 Credits:   
