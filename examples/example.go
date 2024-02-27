@@ -28,8 +28,6 @@ func main() {
 
     log.Println("Result:", res, "Error:", err)
 
-    log.Println("Yuur")
-
     // add function calls to the pipe with deferred execution ( `.Do()` )
     res, err = Pipe[string]("Hello").
 	Next(strings.ToLower).
