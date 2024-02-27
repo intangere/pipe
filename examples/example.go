@@ -159,7 +159,7 @@ func main() {
     log.Println("New res:", res)
 
 
-    //reusable pipe
+    //reusable pipe, simply pass in the argument using .Do(arg) or .Result(arg)
     p = Pipe[string]().
 	Next(func (s string) string {
            return "With argument: " + s
@@ -178,6 +178,7 @@ func main() {
 
 
     //reusable pipe cannot be used with Flow(). It will throw an input error
+    // because Flow executes the function immediately
     p = Pipe[string]().
 	Flow(func (s string) (string, error) {
 		return "testing", nil
@@ -185,4 +186,5 @@ func main() {
 
     _, err = p.Unwrap()
     log.Print("Errored: ", p.Errored(), err)
+
 }

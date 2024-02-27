@@ -10,14 +10,16 @@ import (
 var errType = reflect.TypeOf((*error)(nil)).Elem()
 
 type Pipe_[T any] struct {
-	args []any
+	//args []any
 	extra_args [][]reflect.Value
 	fs []any
 	err error
 	inputs []reflect.Value
 	executionIndex int
 }
+
 func (p *Pipe_[T]) reset() {
+	p.inputs = []reflect.Value{}
 	p.executionIndex = 0
 	p.err = nil
 }
@@ -47,12 +49,6 @@ func (p *Pipe_[T]) DoN(calls_to_execute int) (p_ *Pipe_[T]) {
 			p_ = p
 		}
 	}()
-
-	for _, arg := range p.args {
-		p.inputs = append(p.inputs, reflect.ValueOf(arg))
-	}
-
-        p.args = []any{}
 
 	for fIndex, f := range p.fs[p.executionIndex:p.executionIndex+calls_to_execute] {
 
@@ -87,7 +83,9 @@ func (p *Pipe_[T]) DoN(calls_to_execute int) (p_ *Pipe_[T]) {
 func (p *Pipe_[T]) Do(args ...any) (p_ *Pipe_[T]) {
 	// reset the pipeline to take new arguments
 	if len(args) > 0 {
-		p.args = args
+		for _, arg := range args {
+			p.inputs = append(p.inputs, reflect.ValueOf(arg))
+		}
 		p.reset()
 	}
 	return p.DoN(len(p.fs))
@@ -96,8 +94,10 @@ func (p *Pipe_[T]) Do(args ...any) (p_ *Pipe_[T]) {
 func (p *Pipe_[T]) Result(args ...any) (T, error) {
 	// reset the pipeline to take new arguments
 	if len(args) > 0 {
-		p.args = args
 		p.reset()
+		for _, arg := range args {
+			p.inputs = append(p.inputs, reflect.ValueOf(arg))
+		}
 	}
 	return p.DoN(len(p.fs)).Unwrap()
 }
@@ -105,21 +105,22 @@ func (p *Pipe_[T]) Result(args ...any) (T, error) {
 func (p *Pipe_[T]) Flow(f any, args ...any) (p_ *Pipe_[T]) {
 	p.fs = append(p.fs, f)
 
-	extra_args := []reflect.Value{}
-	for _, arg := range args {
-		extra_args = append(extra_args, reflect.ValueOf(arg))
+	extra_args := make([]reflect.Value, len(args))
+	for i := range args {
+		extra_args[i] = reflect.ValueOf(args[i])
 	}
 
 	p.extra_args = append(p.extra_args, extra_args)
+
 	return p.DoN(1)
 }
 
 func (p *Pipe_[T]) Next(f any, args ...any) *Pipe_[T] {
 	p.fs = append(p.fs, f)
 
-	extra_args := []reflect.Value{}
-	for _, arg := range args {
-		extra_args = append(extra_args, reflect.ValueOf(arg))
+	extra_args := make([]reflect.Value, len(args))
+	for i := range args {
+		extra_args[i] = reflect.ValueOf(args[i])
 	}
 
 	p.extra_args = append(p.extra_args, extra_args)
@@ -127,8 +128,13 @@ func (p *Pipe_[T]) Next(f any, args ...any) *Pipe_[T] {
 }
 
 func Pipe[T any](args ...any) *Pipe_[T] {
+	values := make([]reflect.Value, len(args))
+	for i := range args {
+		values[i] = reflect.ValueOf(args[i])
+	}
+
 	return &Pipe_[T]{
-		args: args,
+		inputs: values,
 	}
 }
 
