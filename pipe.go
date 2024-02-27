@@ -3,8 +3,6 @@ package pipe
 import (
 	"fmt"
 	"reflect"
-	"strings"
-	"log"
 	"errors"
 )
 
