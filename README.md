@@ -34,6 +34,7 @@ Usage (for more see *examples/example.go*):
     log.Println("Result:", res, "Error:", err)
     // Output: Bye world!
 
+    // Note: The generic type parameter for Pipe[T] is the type of the result from your pipeline
 
     // or with deferred execution
     res, err = Pipe[string]("Hello World!").
