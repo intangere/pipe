@@ -83,7 +83,7 @@ Usage (without reflection, constrained to 1 input/1 output/1 type, no magic)  (f
 
         log.Println("Res: ", res, "Error:", err)
     }
-```    
+````    
 
 Credits:   
 https://github.com/aslrousta/pipe - reflect code copied nearly 1-1 from here
