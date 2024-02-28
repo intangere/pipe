@@ -15,4 +15,13 @@ func main() {
 		Result()
 
 	log.Println("Res: ", res, "Error:", err)
+
+	// you can omit type
+	res, err = Pipe("Hello World!\n  ").
+		Flow(strings.ToLower).
+		Flow(strings.Title).
+		Flow(strings.TrimSpace).
+		Result()
+
+	log.Println("Res: ", res, "Error:", err)
 }

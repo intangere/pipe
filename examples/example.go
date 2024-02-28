@@ -224,4 +224,11 @@ func main() {
     _, err = p.Unwrap()
     log.Print("Errored: ", p.Errored(), err)
 
+    // extract some json field
+    type User struct {
+        UserName string `json:"username"`
+	FirstName string `json:"first_name"`
+	LastName string `json:"last_name"`
+    }
+
 }
