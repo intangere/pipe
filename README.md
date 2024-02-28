@@ -9,9 +9,10 @@ Effectively the same functional composition the `|>` operator in Elixir allows f
 go get github.com/intangere/pipe 
 ````    
 
-Usage (for more see *examples/example.go*): 
+Usage (with execution using reflection)  (for more see *examples/example.go*): 
 ````go
 
+    import . "github.com/intangere/pipe"
     // this is an awful example, but it demonstrates a few concepts
 
     // Instead of doing this
@@ -67,5 +68,21 @@ Usage (for more see *examples/example.go*):
     // With argument: 2
 
 ````
+
+Usage (without reflection, constrained to 1 input/1 output/1 type, no magic)  (for more see *examples/simple.go*): 
+````go
+
+    import . "github.com/intangere/pipe/simple"
+
+    func main() {
+        res, err := Pipe[string]("Hello World!\n  ").
+                Flow(strings.ToLower).
+                Flow(strings.Title).
+                Flow(strings.TrimSpace).
+                Result()
+
+        log.Println("Res: ", res, "Error:", err)
+    }
+```
 Credits:   
 https://github.com/aslrousta/pipe - reflect code copied nearly 1-1 from here
